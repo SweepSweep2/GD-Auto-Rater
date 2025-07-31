@@ -9,11 +9,11 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		if (!LevelInfoLayer::init(level, challenge)) return false;
 
 		// Make sure we haven't rated the level yet.
-		if (!m_starRateBtn) return;
-		if (!m_starRateBtn->isEnabled()) return;
+		if (!m_starRateBtn) return false;
+		if (!m_starRateBtn->isEnabled()) return false;
 
 		// Make sure the user has the feature enabled.
-		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return;
+		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return false;
 		
 		// Open the rate menu.
 		m_starRateBtn->activate();
@@ -34,7 +34,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!rateLayer) {
 			log::warn("RateStarsLayer could not be found!");
-			return;
+			return false;
 		}
 	
 		// We can just use the first object because it is the only object.
@@ -42,7 +42,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!mainLayer) {
 			log::warn("Main Layer not found inside RateStarsLayer!");
-			return;
+			return false;
 		}
 
 		CCMenu* menuLayer = nullptr;
@@ -61,7 +61,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!menuLayer) {
 			log::warn("Main CCMenu Layer could not be found!");
-			return;
+			return false;
 		}
 
 		CCMenuItemSpriteExtra* button;
@@ -130,7 +130,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the difficulty selection button exists
 		if (!button) {
 			log::warn("Difficulty selection button not found!");
-			return;
+			return false;
 		}
 
 		button->activate();
@@ -140,7 +140,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the submit rating button exists
 		if (!button) {
 			log::warn("Submit rating button not found!");
-			return;
+			return false;
 		}
 
 		button->activate();
@@ -166,7 +166,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newRateLayer) {
 			log::warn("RateStarsLayer could not be found!");
-			return;
+			return false;
 		}
 
 		// We can just use the first object because it is the only object.
@@ -174,7 +174,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newMainLayer) {
 			log::warn("Main Layer not found inside RateStarsLayer!");
-			return;
+			return false;
 		}
 
 		CCMenu* newMenuLayer = nullptr;
@@ -193,7 +193,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newMenuLayer) {
 			log::warn("Main CCMenu Layer could not be found!");
-			return;
+			return false;
 		}
 
 		CCMenuItemSpriteExtra* newButton;
@@ -248,7 +248,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the difficulty selection button exists
 		if (!newButton) {
 			log::warn("Difficulty selection button not found!");
-			return;
+			return false;
 		}
 
 		newButton->activate();
@@ -258,7 +258,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the submit rating button exists
 		if (!newButton) {
 			log::warn("Submit rating button not found!");
-			return;
+			return false;
 		}
 
 		newButton->activate();
