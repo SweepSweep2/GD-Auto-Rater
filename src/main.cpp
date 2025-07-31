@@ -100,18 +100,92 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		button->activate();
 
-		CCSprite* disableButton = CCSprite::createWithSpriteFrameName("GJ_starBtn2_001.png");
+		// Do it all again because robtop
 
-		// Check if the disable rate button sprite exists
-		if (!disableButton) {
-			log::warn("Disabled Rate Button sprite not found!");
+		// Open the rate menu.
+		m_starRateBtn->activate();
+
+		RateStarsLayer* newRateLayer = nullptr;
+
+		auto& newChildren = *getParent()->getChildren();
+
+		// Loop through the root of the game tree until we find the rate menu.
+		for (int i = 0; i < newChildren.count(); i++) {
+			auto node = static_cast<CCNode*>(newChildren.objectAtIndex(i));
+
+			if (auto rate = dynamic_cast<RateStarsLayer*>(node)) {
+				newRateLayer = rate;
+				break;
+			}
+		}
+
+		if (!newRateLayer) {
+			log::warn("RateStarsLayer could not be found!");
 			return;
 		}
 
-		m_starRateBtn->setSprite(disableButton);
-		m_starRateBtn->m_bEnabled = false;
+		// We can just use the first object because it is the only object.
+		auto newMainLayer = static_cast<CCNode*>(newRateLayer->getChildren()->objectAtIndex(0));
 
-		log::info("Successfully rated the level {}*!", starsRated);
+		if (!newMainLayer) {
+			log::warn("Main Layer not found inside RateStarsLayer!");
+			return;
+		}
+
+		CCMenu* newMenuLayer = nullptr;
+
+		auto& newMainLayerChildren = *newMainLayer->getChildren();
+
+		// Loop through the root of the game tree until we find the main layer.
+		for (int i = 0; i < newMainLayerChildren.count(); i++) {
+			auto node = static_cast<CCNode*>(newMainLayerChildren.objectAtIndex(i));
+
+			if (auto menu = dynamic_cast<CCMenu*>(node)) {
+				newMenuLayer = menu;
+				break;
+			}
+		}
+
+		if (!newMenuLayer) {
+			log::warn("Main CCMenu Layer could not be found!");
+			return;
+		}
+
+		CCMenuItemSpriteExtra* newButton;
+
+		int newStarsRated = 0; // Used to log the amount of stars that the level got rated
+		
+		// Only rate the requested difficulty if the user doesn't have a difficulty override.
+		if (!Mod::get()->getSettingValue<bool>("toggle-override-difficulty-rate")){
+			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(4));
+				newStarsRated = 5;
+			} else {
+				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				newStarsRated = p0->m_starsRequested;
+			}
+		} else { // This is if the user specified a difficulty override.
+			newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
+			newStarsRated = Mod::get()->getSettingValue<int>("override-difficulty-rate");
+		}
+
+		// Check if the difficulty selection button exists
+		if (!newButton) {
+			log::warn("Difficulty selection button not found!");
+			return;
+		}
+
+		newButton->activate();
+
+		newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(11));
+
+		// Check if the submit rating button exists
+		if (!newButton) {
+			log::warn("Submit rating button not found!");
+			return;
+		}
+
+		newButton->activate();
 
 		// yay we done :D
 	}
