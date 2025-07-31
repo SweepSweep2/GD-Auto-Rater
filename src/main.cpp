@@ -68,27 +68,13 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		int starsRated = 0; // Used to log the amount of stars that the level got rated
 		
-		// Only rate the requested difficulty if the user doesn't have a difficulty override.
-		if (!Mod::get()->getSettingValue<bool>("toggle-override-difficulty-rate")){
-			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
-				starsRated = 5;
-			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
-				starsRated = p0->m_starsRequested;
-			}
-		} else { // This is if the user specified a difficulty override.
-			button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
-			starsRated = Mod::get()->getSettingValue<int>("override-difficulty-rate");
-		}
-
 		// Only rate the requested difficulty if the user chose it.
 		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
 			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
 				starsRated = 5;
 			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested - 1));
 				starsRated = p0->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
@@ -206,7 +192,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(4));
 				newStarsRated = 5;
 			} else {
-				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested - 1));
 				newStarsRated = p0->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
