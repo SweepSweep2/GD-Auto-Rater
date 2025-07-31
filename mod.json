@@ -2,9 +2,7 @@
 	"geode": "4.5.0",
 	"gd": {
 		"win": "2.2074",
-		"android": "2.2074",
-		"ios": "2.2074",
-		"mac": "2.2074"
+		"android": "2.2074"
 	},
 	"id": "sweep.auto-rater",
 	"name": "Auto Rater",
@@ -24,10 +22,12 @@
 			"name": "Enable Auto-Rater",
 			"default": true
 		},
-		"toggle-override-difficulty-rate": {
-			"type": "bool",
-			"name": "Enable Override Rate Difficulty",
-			"default": false
+		"rate-mode-selection": {
+			"type": "string",
+			"name": "Rate Mode",
+			"default": "Requested Difficulty",
+			"one-of": ["Requested Difficulty", "Current Difficulty", "Override"],
+			"enable-if": "setting:enable-auto-rater"
 		},
 		"override-difficulty-rate": {
 			"type": "int",
@@ -35,8 +35,8 @@
 			"description": "Rates all levels with this difficulty (in stars) instead of matching with the current level's difficulty. (0: don't override)",
 			"min": 1,
 			"max": 10,
-			"default": 0,
-			"enable-if": "setting:toggle-override-difficulty-rate",
+			"default": 5,
+			"enable-if": "setting:enable-auto-rater",
 			"control": {
 				"slider": false
 			}

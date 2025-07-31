@@ -82,6 +82,51 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 			starsRated = Mod::get()->getSettingValue<int>("override-difficulty-rate");
 		}
 
+		// Only rate the requested difficulty if the user chose it.
+		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
+			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
+				starsRated = 5;
+			} else {
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				starsRated = p0->m_starsRequested;
+			}
+		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
+			starsRated = p0->getAverageDifficulty();
+
+			switch (starsRated) {
+				case 0:
+					starsRated = 5;
+					break;
+				case 1:
+					starsRated = 2;
+					break;
+				case 2:
+					starsRated = 3;
+					break;
+				case 3:
+					starsRated = 4;
+					break;
+				case 4:
+					starsRated = 6;
+					break;
+				case 5:
+					starsRated = 8;
+					break;
+				case 6:
+					starsRated = 10;
+					break;
+				case 7:
+					starsRated = 1;
+					break;
+			}
+
+			button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(starsRated - 1));
+		} else { // If the user chose override.
+			button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
+			starsRated = Mod::get()->getSettingValue<int>("override-difficulty-rate");
+		}
+
 		// Check if the difficulty selection button exists
 		if (!button) {
 			log::warn("Difficulty selection button not found!");
@@ -155,8 +200,8 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		int newStarsRated = 0; // Used to log the amount of stars that the level got rated
 		
-		// Only rate the requested difficulty if the user doesn't have a difficulty override.
-		if (!Mod::get()->getSettingValue<bool>("toggle-override-difficulty-rate")){
+		// Only rate the requested difficulty if the user chose it.
+		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
 			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(4));
 				newStarsRated = 5;
@@ -164,7 +209,38 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
 				newStarsRated = p0->m_starsRequested;
 			}
-		} else { // This is if the user specified a difficulty override.
+		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
+			newStarsRated = p0->getAverageDifficulty();
+
+			switch (newStarsRated) {
+				case 0:
+					newStarsRated = 5;
+					break;
+				case 1:
+					newStarsRated = 2;
+					break;
+				case 2:
+					newStarsRated = 3;
+					break;
+				case 3:
+					newStarsRated = 4;
+					break;
+				case 4:
+					newStarsRated = 6;
+					break;
+				case 5:
+					newStarsRated = 8;
+					break;
+				case 6:
+					newStarsRated = 10;
+					break;
+				case 7:
+					newStarsRated = 1;
+					break;
+			}
+
+			newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(newStarsRated - 1));
+		} else { // If the user chose override.
 			newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
 			newStarsRated = Mod::get()->getSettingValue<int>("override-difficulty-rate");
 		}
@@ -186,6 +262,8 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		}
 
 		newButton->activate();
+
+		log::info("Successfully rated the level {}*", newStarsRated);
 
 		// yay we done :D
 	}

@@ -13,4 +13,6 @@ You can enable/disable the auto rating feature, and override the difficulty the 
 ## Credits
 Inspiration: [Auto Like](mod:hbg1010.auto-like)
 
+Testers: [ArcticWoof](https://www.youtube.com/@ArcticWoofxD)
+
 Made with love from Sweep <3
