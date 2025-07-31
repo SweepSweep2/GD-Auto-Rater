@@ -1,0 +1,48 @@
+{
+	"geode": "4.5.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074"
+	},
+	"id": "sweep.auto-rater",
+	"name": "Auto Rater",
+	"version": "v1.0.0",
+	"developer": "Sweep",
+	"description": "Automatically rates the stars of levels.",
+	"links": {
+		"source": "https://github.com/SweepSweep2/gd-auto-rater"
+	},
+	"issues": {
+		"info": "You can report issues by either creating a new issue on the GitHub, or messaging me on Discord: @sweepsweep2",
+		"url": "https://github.com/SweepSweep2/gd-auto-rater/issues"
+	},
+	"settings": {
+		"enable-auto-rater": {
+			"type": "bool",
+			"name": "Enable Auto-Rater",
+			"default": true
+		},
+		"toggle-override-difficulty-rate": {
+			"type": "bool",
+			"name": "Enable Override Rate Difficulty",
+			"default": false
+		},
+		"override-difficulty-rate": {
+			"type": "int",
+			"name": "Override Rate Difficulty",
+			"description": "Rates all levels with this difficulty (in stars) instead of matching with the current level's difficulty. (0: don't override)",
+			"min": 1,
+			"max": 10,
+			"default": 0,
+			"enable-if": "setting:toggle-override-difficulty-rate",
+			"control": {
+				"slider": false
+			}
+		}
+	},
+	"tags": [
+		"online",
+		"universal",
+		"enhancement"
+	]
+}
