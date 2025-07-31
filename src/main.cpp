@@ -5,15 +5,15 @@ using namespace geode::prelude;
 #include <Geode/modify/LevelInfoLayer.hpp>
 
 class $modify(AutoLevelRate, LevelInfoLayer) {
-	bool init(GJGameLevel* level, bool challenge) {
-		if (!LevelInfoLayer::init(level, challenge)) return false;
-
+	void levelDownloadFinished(GJGameLevel* p0) {
+		LevelInfoLayer::levelDownloadFinished(p0); // Run the original levelDownloadFinished code before running our custom code.
+		
 		// Make sure we haven't rated the level yet.
-		if (!m_starRateBtn) return false;
-		if (!m_starRateBtn->isEnabled()) return false;
+		if (!m_starRateBtn) return;
+		if (!m_starRateBtn->isEnabled()) return;
 
 		// Make sure the user has the feature enabled.
-		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return false;
+		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return;
 		
 		// Open the rate menu.
 		m_starRateBtn->activate();
@@ -34,7 +34,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!rateLayer) {
 			log::warn("RateStarsLayer could not be found!");
-			return false;
+			return;
 		}
 	
 		// We can just use the first object because it is the only object.
@@ -42,7 +42,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!mainLayer) {
 			log::warn("Main Layer not found inside RateStarsLayer!");
-			return false;
+			return;
 		}
 
 		CCMenu* menuLayer = nullptr;
@@ -61,7 +61,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!menuLayer) {
 			log::warn("Main CCMenu Layer could not be found!");
-			return false;
+			return;
 		}
 
 		CCMenuItemSpriteExtra* button;
@@ -70,12 +70,12 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		
 		// Only rate the requested difficulty if the user doesn't have a difficulty override.
 		if (!Mod::get()->getSettingValue<bool>("toggle-override-difficulty-rate")){
-			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
 				starsRated = 5;
 			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
-				starsRated = level->m_starsRequested;
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				starsRated = p0->m_starsRequested;
 			}
 		} else { // This is if the user specified a difficulty override.
 			button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
@@ -84,15 +84,15 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		// Only rate the requested difficulty if the user chose it.
 		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
-			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
 				starsRated = 5;
 			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
-				starsRated = level->m_starsRequested;
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				starsRated = p0->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
-			starsRated = level->getAverageDifficulty();
+			starsRated = p0->getAverageDifficulty();
 
 			switch (starsRated) {
 				case 0:
@@ -130,7 +130,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the difficulty selection button exists
 		if (!button) {
 			log::warn("Difficulty selection button not found!");
-			return false;
+			return;
 		}
 
 		button->activate();
@@ -140,7 +140,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the submit rating button exists
 		if (!button) {
 			log::warn("Submit rating button not found!");
-			return false;
+			return;
 		}
 
 		button->activate();
@@ -166,7 +166,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newRateLayer) {
 			log::warn("RateStarsLayer could not be found!");
-			return false;
+			return;
 		}
 
 		// We can just use the first object because it is the only object.
@@ -174,7 +174,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newMainLayer) {
 			log::warn("Main Layer not found inside RateStarsLayer!");
-			return false;
+			return;
 		}
 
 		CCMenu* newMenuLayer = nullptr;
@@ -193,7 +193,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		if (!newMenuLayer) {
 			log::warn("Main CCMenu Layer could not be found!");
-			return false;
+			return;
 		}
 
 		CCMenuItemSpriteExtra* newButton;
@@ -202,15 +202,15 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		
 		// Only rate the requested difficulty if the user chose it.
 		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
-			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(4));
 				newStarsRated = 5;
 			} else {
-				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
-				newStarsRated = level->m_starsRequested;
+				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
+				newStarsRated = p0->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
-			newStarsRated = level->getAverageDifficulty();
+			newStarsRated = p0->getAverageDifficulty();
 
 			switch (newStarsRated) {
 				case 0:
@@ -248,7 +248,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the difficulty selection button exists
 		if (!newButton) {
 			log::warn("Difficulty selection button not found!");
-			return false;
+			return;
 		}
 
 		newButton->activate();
@@ -258,7 +258,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		// Check if the submit rating button exists
 		if (!newButton) {
 			log::warn("Submit rating button not found!");
-			return false;
+			return;
 		}
 
 		newButton->activate();
@@ -266,6 +266,5 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		log::info("Successfully rated the level {}*", newStarsRated);
 
 		// yay we done :D
-		return true;
 	}
 };
