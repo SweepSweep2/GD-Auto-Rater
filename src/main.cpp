@@ -5,9 +5,9 @@ using namespace geode::prelude;
 #include <Geode/modify/LevelInfoLayer.hpp>
 
 class $modify(AutoLevelRate, LevelInfoLayer) {
-	void levelDownloadFinished(GJGameLevel* p0) {
-		LevelInfoLayer::levelDownloadFinished(p0); // Run the original levelDownloadFinished code before running our custom code.
-		
+	bool bool init(GJGameLevel* level, bool challenge) {
+		if (!LevelInfoLayer::init(level, challenge)) return false;
+
 		// Make sure we haven't rated the level yet.
 		if (!m_starRateBtn) return;
 		if (!m_starRateBtn->isEnabled()) return;
@@ -70,12 +70,12 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		
 		// Only rate the requested difficulty if the user doesn't have a difficulty override.
 		if (!Mod::get()->getSettingValue<bool>("toggle-override-difficulty-rate")){
-			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
 				starsRated = 5;
 			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
-				starsRated = p0->m_starsRequested;
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
+				starsRated = level->m_starsRequested;
 			}
 		} else { // This is if the user specified a difficulty override.
 			button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(Mod::get()->getSettingValue<int>("override-difficulty-rate") - 1));
@@ -84,15 +84,15 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 		// Only rate the requested difficulty if the user chose it.
 		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
-			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(4));
 				starsRated = 5;
 			} else {
-				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
-				starsRated = p0->m_starsRequested;
+				button = static_cast<CCMenuItemSpriteExtra*>(menuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
+				starsRated = level->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
-			starsRated = p0->getAverageDifficulty();
+			starsRated = level->getAverageDifficulty();
 
 			switch (starsRated) {
 				case 0:
@@ -202,15 +202,15 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		
 		// Only rate the requested difficulty if the user chose it.
 		if (Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Requested Difficulty"){
-			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(4));
 				newStarsRated = 5;
 			} else {
-				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(p0->m_starsRequested));
-				newStarsRated = p0->m_starsRequested;
+				newButton = static_cast<CCMenuItemSpriteExtra*>(newMenuLayer->getChildren()->objectAtIndex(level->m_starsRequested));
+				newStarsRated = level->m_starsRequested;
 			}
 		} else if(Mod::get()->getSettingValue<std::string>("rate-mode-selection") == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
-			newStarsRated = p0->getAverageDifficulty();
+			newStarsRated = level->getAverageDifficulty();
 
 			switch (newStarsRated) {
 				case 0:
@@ -266,5 +266,6 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		log::info("Successfully rated the level {}*", newStarsRated);
 
 		// yay we done :D
+		return true;
 	}
 };
