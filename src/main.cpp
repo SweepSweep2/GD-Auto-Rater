@@ -5,7 +5,7 @@ using namespace geode::prelude;
 #include <Geode/modify/LevelInfoLayer.hpp>
 
 class $modify(AutoLevelRate, LevelInfoLayer) {
-	bool bool init(GJGameLevel* level, bool challenge) {
+	bool init(GJGameLevel* level, bool challenge) {
 		if (!LevelInfoLayer::init(level, challenge)) return false;
 
 		// Make sure we haven't rated the level yet.
