@@ -11,7 +11,7 @@ You can enable/disable the auto rating feature, and override the difficulty the 
 ---
 
 ## Disclaimer!
-Using this mod too much in a really short timespan can get you temporarily IP-banend from the servers! Use this mod at your own risk!
+Using this mod too much in a really short timespan can get you temporarily IP-banned from the servers! Use this mod at your own risk!
 
 Although just using this mod normally will most likely not get you temporarily IP-banned.
 

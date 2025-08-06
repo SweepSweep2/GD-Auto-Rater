@@ -8,7 +8,7 @@
 	},
 	"id": "sweep.auto-rater",
 	"name": "Auto Rater",
-	"version": "v1.0.0",
+	"version": "v1.1.0",
 	"developer": "Sweep",
 	"description": "Automatically rates the stars of levels.",
 	"links": {
@@ -24,6 +24,10 @@
 			"name": "Enable Auto-Rater",
 			"default": true
 		},
+		"separator": {
+			"type": "title",
+			"name": "Rate Settings"
+		},
 		"rate-mode-selection": {
 			"type": "string",
 			"name": "Rate Mode",
@@ -34,7 +38,7 @@
 		"override-difficulty-rate": {
 			"type": "int",
 			"name": "Override Rate Difficulty",
-			"description": "Rates all levels with this difficulty (in stars) instead of matching with the current level's difficulty. (0: don't override)",
+			"description": "If the rate mode is set to Override, the mod rates all levels with this difficulty (in stars).",
 			"min": 1,
 			"max": 10,
 			"default": 5,
@@ -42,6 +46,14 @@
 			"control": {
 				"slider": false
 			}
+		},
+		"na-override": {
+			"type": "string",
+			"name": "NA Override",
+			"description": "If the rate mode is set to Requested Difficulty or Current Difficulty and the one selected is NA, then it will rate the level in the way this setting specifies. (if the final difficulty is still NA, it will rate the level as if the Override mode is selected)",
+			"default": "Requested Difficulty",
+			"one-of": ["Requested Difficulty", "Current Difficulty", "Override"],
+			"enable-if": "setting:enable-auto-rater"
 		}
 	},
 	"tags": [
