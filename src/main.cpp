@@ -69,6 +69,8 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 			rateDemonLayer->onRate(rateDemonLayer->m_submitButton);
 
 			log::info("Successfully rated the level {}!", demonRated);
+
+			return
 		}
 		
 		// Make sure we haven't rated the level yet.
