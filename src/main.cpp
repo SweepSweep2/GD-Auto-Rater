@@ -70,7 +70,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 			log::info("Successfully rated the level {}!", demonRated);
 
-			return
+			return;
 		}
 		
 		// Make sure we haven't rated the level yet.
