@@ -8,7 +8,7 @@
 	},
 	"id": "sweep.auto-rater",
 	"name": "Auto Rater",
-	"version": "v1.1.0",
+	"version": "v1.2.0",
 	"developer": "Sweep",
 	"description": "Automatically rates the stars of levels.",
 	"links": {
@@ -17,6 +17,12 @@
 	"issues": {
 		"info": "You can report issues by either creating a new issue on the GitHub, or messaging me on Discord: @sweepsweep2",
 		"url": "https://github.com/SweepSweep2/gd-auto-rater/issues"
+	},
+	"incompatibilities": {
+		"hbg1010.autorate": {
+			"version": ">=1.0.0",
+			"importance": "breaking"
+		}
 	},
 	"settings": {
 		"enable-auto-rater": {
@@ -53,6 +59,25 @@
 			"description": "If the rate mode is set to Requested Difficulty or Current Difficulty and the one selected is NA, then it will rate the level in the way this setting specifies. (if the final difficulty is still NA, it will rate the level as if the Override mode is selected)",
 			"default": "Requested Difficulty",
 			"one-of": ["Requested Difficulty", "Current Difficulty", "Override"],
+			"enable-if": "setting:enable-auto-rater"
+		},
+		"demon-separator": {
+			"type": "title",
+			"name": "Demon Rate Settings"
+		},
+		"override-demon-rate": {
+			"type": "bool",
+			"name": "Override Demon Rate",
+			"description": "Toggles whether the mod should rate using the demon difficulty you set in Override Demon Difficulty Rate.",
+			"default": false,
+			"enable-if": "setting:enable-auto-rater"
+		},
+		"override-difficulty-demon-rate": {
+			"type": "string",
+			"name": "Override Demon Difficulty Rate",
+			"description": "If Override Demon Rate is on, the mod will rate all demons with this difficulty.",
+			"one-of": ["Easy Demon", "Medium Demon", "Hard Demon", "Insane Demon", "Extreme Demon"],
+			"default": "Hard Demon",
 			"enable-if": "setting:enable-auto-rater"
 		}
 	},

@@ -12,10 +12,6 @@ $on_mod(Loaded) {
 class $modify(AutoLevelRate, LevelInfoLayer) {
 	void levelDownloadFinished(GJGameLevel* p0) {
 		LevelInfoLayer::levelDownloadFinished(p0); // Run the original levelDownloadFinished code before running our custom code.
-		
-		// Make sure we haven't rated the level yet.
-		if (!m_starRateBtn) return;
-		if (!m_starRateBtn->isEnabled()) return;
 
 		// Make sure the user has the feature enabled.
 		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return;
@@ -23,6 +19,61 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		std::string rateMode = Mod::get()->getSettingValue<std::string>("rate-mode-selection");
 		int overrideDifficultyRate = Mod::get()->getSettingValue<int>("override-difficulty-rate");
 		std::string naOverride = Mod::get()->getSettingValue<std::string>("na-override");
+		bool overrideDemonRate = Mod::get()->getSettingValue<bool>("override-demon-rate");
+		std::string overrideDifficultyDemonRate = Mod::get()->getSettingValue<std::string>("override-difficulty-demon-rate");
+
+		// Rate demon difficulty if it is available.
+		if (m_demonRateBtn && m_demonRateBtn->isEnabled()) {
+			// no comments here because screw you :troll:
+			std::string demonRated = "";
+			RateDemonLayer* rateDemonLayer = RateDemonLayer::create(m_level->m_levelID);
+
+			if (overrideDemonRate) {
+				demonRated = overrideDifficultyDemonRate;
+				if (overrideDifficultyDemonRate == "Easy Demon") {
+					rateDemonLayer->m_demonRate = 1;
+				} else if (overrideDifficultyDemonRate == "Medium Demon") {
+					rateDemonLayer->m_demonRate = 2;
+				} else if (overrideDifficultyDemonRate == "Hard Demon") {
+					rateDemonLayer->m_demonRate = 3;
+				} else if (overrideDifficultyDemonRate == "Insane Demon") {
+					rateDemonLayer->m_demonRate = 4;
+				} else {
+					rateDemonLayer->m_demonRate = 5;
+				}
+			} else {
+				switch (m_level->m_demonDifficulty) {
+					case 3:
+						rateDemonLayer->m_demonRate = 1;
+						demonRated = "Easy Demon";
+						break;
+					case 4:
+						rateDemonLayer->m_demonRate = 2;
+						demonRated = "Medium Demon";
+						break;
+					case 0:
+						rateDemonLayer->m_demonRate = 3;
+						demonRated = "Hard Demon";
+						break;
+					case 5:
+						rateDemonLayer->m_demonRate = 4;
+						demonRated = "Insane Demon";
+						break;
+					case 6:
+						rateDemonLayer->m_demonRate = 5;
+						demonRated = "Extreme Demon";
+						break;
+				}
+			}
+
+			rateDemonLayer->onRate(rateDemonLayer->m_submitButton);
+
+			log::info("Successfully rated the level {}!", demonRated);
+		}
+		
+		// Make sure we haven't rated the level yet.
+		if (!m_starRateBtn) return;
+		if (!m_starRateBtn->isEnabled()) return;
 		
 		RateStarsLayer* rateStarsLayer = RateStarsLayer::create(m_level->m_levelID, p0->isPlatformer(), false);
 
