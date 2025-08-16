@@ -1,6 +1,8 @@
 # Auto Rater
 A Geometry Dash mod that automatically rates the difficulty of online levels.
 
+<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/SweepSweep2/GD-Auto-Rater/total?logo=geode&logoColor=ffffff&label=Downloads">
+
 ---
 
 ## How to Use
@@ -24,5 +26,6 @@ Inspiration: [Auto Like](mod:hbg1010.auto-like)
 Testers: [ArcticWoof](https://www.youtube.com/@ArcticWoofxD), [nobrainrgamr](https://www.youtube.com/@nobrainrgamr)
 
 ---
+
 
 Made with love from Sweep <3
