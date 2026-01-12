@@ -10,11 +10,13 @@ $on_mod(Loaded) {
 }
 
 class $modify(AutoLevelRate, LevelInfoLayer) {
-	void levelDownloadFinished(GJGameLevel* p0) {
-		LevelInfoLayer::levelDownloadFinished(p0); // Run the original levelDownloadFinished code before running our custom code.
+	bool init(GJGameLevel* level, bool challenge) {
+		if (!LevelInfoLayer::init(level, challenge)) { // Run the original init code before running our custom code.
+			return false;
+		}
 
 		// Make sure the user has the feature enabled.
-		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return;
+		if (!Mod::get()->getSettingValue<bool>("enable-auto-rater")) return true;
 
 		std::string rateMode = Mod::get()->getSettingValue<std::string>("rate-mode-selection");
 		int overrideDifficultyRate = Mod::get()->getSettingValue<int>("override-difficulty-rate");
@@ -70,24 +72,24 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 
 			log::info("Successfully rated the level {}!", demonRated);
 
-			return;
+			return true;
 		}
 		
 		// Make sure we haven't rated the level yet.
-		if (!m_starRateBtn) return;
-		if (!m_starRateBtn->isEnabled()) return;
+		if (!m_starRateBtn) return true;
+		if (!m_starRateBtn->isEnabled()) return true;
 		
-		RateStarsLayer* rateStarsLayer = RateStarsLayer::create(m_level->m_levelID, p0->isPlatformer(), false);
+		RateStarsLayer* rateStarsLayer = RateStarsLayer::create(m_level->m_levelID, level->isPlatformer(), false);
 
 		int starsRated = 0; // Used to log the amount of stars that the level got rated
 		
 		// Only rate the requested difficulty if the user chose it.
 		if (rateMode == "Requested Difficulty"){
-			if (p0->m_starsRequested == 0) { // If they never requested any stars (N/A)
+			if (level->m_starsRequested == 0) { // If they never requested any stars (N/A)
 				if (naOverride == "Requested Difficulty" || naOverride == "Override") {
 					starsRated = overrideDifficultyRate;
 				} else if (naOverride == "Current Difficulty") {
-					starsRated = p0->getAverageDifficulty();
+					starsRated = level->getAverageDifficulty();
 
 					switch (starsRated) {
 						case 0:
@@ -117,19 +119,19 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 					}
 				}
 			} else {
-				starsRated = p0->m_starsRequested;
+				starsRated = level->m_starsRequested;
 			}
 		} else if(rateMode == "Current Difficulty") { // Only rate the current difficulty if the user chose it.
-			starsRated = p0->getAverageDifficulty();
+			starsRated = level->getAverageDifficulty();
 
 			if (starsRated == 0) {
 				if (naOverride == "Current Difficulty" || naOverride == "Override") {
 					starsRated = overrideDifficultyRate;
 				} else {
-					if (p0->m_starsRequested == 0) {
+					if (level->m_starsRequested == 0) {
 						starsRated = overrideDifficultyRate;
 					} else {
-						starsRated = p0->m_starsRequested;
+						starsRated = level->m_starsRequested;
 					}
 				}
 			} else {
@@ -165,5 +167,7 @@ class $modify(AutoLevelRate, LevelInfoLayer) {
 		rateStarsLayer->onRate(rateStarsLayer->m_submitButton);
 
 		log::info("Successfully rated the level {}*!", starsRated);
+
+		return true;
 	}
 };
