@@ -8,7 +8,7 @@
 	},
 	"id": "sweep.auto-rater",
 	"name": "Auto Rater",
-	"version": "v1.2.0",
+	"version": "v1.2.1",
 	"developer": "Sweep",
 	"description": "Automatically rates the stars of levels.",
 	"links": {

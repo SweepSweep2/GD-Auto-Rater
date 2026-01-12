@@ -1,3 +1,6 @@
+# 1.2.1
+- Now rates downloaded levels
+
 # 1.2.0
 - Added the ability to rate demon difficulties on demon levels.
 
