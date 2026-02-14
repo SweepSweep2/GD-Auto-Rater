@@ -1,3 +1,6 @@
+# 1.2.2-alpha.2
+- Bump to Geode 5.0.0-alpha.2
+
 # 1.2.1
 - Now rates downloaded levels
 
@@ -13,3 +16,4 @@
 
 # 1.0.0
 - Release! (yay :D)
+
